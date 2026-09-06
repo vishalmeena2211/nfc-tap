@@ -1,5 +1,5 @@
 {
-  "name": "web-nfc",
+  "name": "nfc-tap",
   "version": "0.1.0",
   "description": "A friendly wrapper around the browser's Web NFC API: one object per tap, a real stop(), auto-resume on backgrounding and typed errors.",
   "type": "module",
@@ -36,7 +36,7 @@
   },
   "keywords": [
     "nfc",
-    "web-nfc",
+    "nfc-tap",
     "ndef",
     "ndefreader",
     "nfc-tag",
@@ -52,11 +52,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vishalmeena2211/web-nfc.git"
+    "url": "git+https://github.com/vishalmeena2211/nfc-tap.git"
   },
-  "homepage": "https://github.com/vishalmeena2211/web-nfc#readme",
+  "homepage": "https://github.com/vishalmeena2211/nfc-tap#readme",
   "bugs": {
-    "url": "https://github.com/vishalmeena2211/web-nfc/issues"
+    "url": "https://github.com/vishalmeena2211/nfc-tap/issues"
   },
   "peerDependencies": {
     "react": ">=17"

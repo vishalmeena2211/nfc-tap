@@ -1,5 +1,5 @@
 /**
- * React adapter for `web-nfc`.
+ * React adapter for `nfc-tap`.
  *
  * Hooks only — no JSX, so this file needs no JSX runtime and `react` stays an
  * optional peer dependency.

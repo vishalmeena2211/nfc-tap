@@ -1,12 +1,12 @@
-# web-nfc
+# nfc-tap
 
 _A friendly wrapper around the browser's Web NFC API. One plain object per tap, a real `stop()`, and errors you can switch on._
 
-[![npm version](https://img.shields.io/npm/v/web-nfc.svg)](https://www.npmjs.com/package/web-nfc)
-[![minzipped size](https://img.shields.io/bundlephobia/minzip/web-nfc)](https://bundlephobia.com/package/web-nfc)
-[![license MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/vishalmeena2211/web-nfc/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/nfc-tap.svg)](https://www.npmjs.com/package/nfc-tap)
+[![minzipped size](https://img.shields.io/bundlephobia/minzip/nfc-tap)](https://bundlephobia.com/package/nfc-tap)
+[![license MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/vishalmeena2211/nfc-tap/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](https://www.typescriptlang.org/)
-[![GitHub](https://img.shields.io/badge/GitHub-vishalmeena2211%2Fweb--nfc-181717?logo=github)](https://github.com/vishalmeena2211/web-nfc)
+[![GitHub](https://img.shields.io/badge/GitHub-vishalmeena2211%2Fweb--nfc-181717?logo=github)](https://github.com/vishalmeena2211/nfc-tap)
 
 **Chrome for Android only.** Web NFC ships in Chrome/Edge on Android 89+, over HTTPS, and nowhere else — not desktop Chrome, not Safari, not Firefox, and not iOS. This package tells you that honestly through `isSupported()` instead of failing at the first tap. See [Browser support](#browser-support).
 
@@ -41,24 +41,24 @@ Every NFC package on npm is Cordova, Capacitor, React Native, or a Node smartcar
 ## Install
 
 ```bash
-npm install web-nfc
+npm install nfc-tap
 ```
 
-Or straight from a CDN — the IIFE build exposes the global `WebNfc`:
+Or straight from a CDN — the IIFE build exposes the global `NfcTap`:
 
 ```html
-<script src="https://unpkg.com/web-nfc"></script>
+<script src="https://unpkg.com/nfc-tap"></script>
 <script>
-  if (WebNfc.isSupported()) WebNfc.scan({ onTag: (t) => console.log(t.text) });
+  if (NfcTap.isSupported()) NfcTap.scan({ onTag: (t) => console.log(t.text) });
 </script>
 ```
 
-No runtime dependencies. React is an optional peer dependency, used only by `web-nfc/react`.
+No runtime dependencies. React is an optional peer dependency, used only by `nfc-tap/react`.
 
 ## Quick start
 
 ```js
-import Nfc from 'web-nfc';
+import Nfc from 'nfc-tap';
 
 const button = document.querySelector('#scan');
 let scan = null;
@@ -96,13 +96,13 @@ button.addEventListener('click', async () => {
 Named imports work identically:
 
 ```js
-import { scan, write, read, isSupported, NfcError } from 'web-nfc';
+import { scan, write, read, isSupported, NfcError } from 'nfc-tap';
 ```
 
 ## React
 
 ```tsx
-import { useNfc } from 'web-nfc/react';
+import { useNfc } from 'nfc-tap/react';
 
 export function TagReader() {
   const { supported, scanning, lastTag, error, start, stop } = useNfc();
@@ -334,7 +334,7 @@ if (confirm('Permanently lock this tag? This cannot be undone.')) {
 `decodeMessage()` and `toNdefMessage()` are pure functions with no DOM access, so the interesting half of any NFC feature can be tested in plain Node — that is how this package's own suite works. Build a fake record by hand:
 
 ```js
-import { decodeMessage } from 'web-nfc';
+import { decodeMessage } from 'nfc-tap';
 
 const payload = new TextEncoder().encode('hello tag');
 const [record] = decodeMessage({
@@ -359,8 +359,8 @@ Chrome DevTools has **no NFC emulation** — there is no equivalent of the senso
 ## Contributing
 
 ```bash
-git clone https://github.com/vishalmeena2211/web-nfc.git
-cd web-nfc
+git clone https://github.com/vishalmeena2211/nfc-tap.git
+cd nfc-tap
 npm install
 npm run dev        # tsup --watch
 npm run typecheck
@@ -371,10 +371,10 @@ The demo in `demo/index.html` loads `../dist/index.global.js`, so run `npm run b
 
 ## Links
 
-- **Repository** — [github.com/vishalmeena2211/web-nfc](https://github.com/vishalmeena2211/web-nfc)
-- **npm** — [npmjs.com/package/web-nfc](https://www.npmjs.com/package/web-nfc)
-- **Issues & feature requests** — [Report an issue](https://github.com/vishalmeena2211/web-nfc/issues)
-- **Changelog** — [releases](https://github.com/vishalmeena2211/web-nfc/releases)
+- **Repository** — [github.com/vishalmeena2211/nfc-tap](https://github.com/vishalmeena2211/nfc-tap)
+- **npm** — [npmjs.com/package/nfc-tap](https://www.npmjs.com/package/nfc-tap)
+- **Issues & feature requests** — [Report an issue](https://github.com/vishalmeena2211/nfc-tap/issues)
+- **Changelog** — [releases](https://github.com/vishalmeena2211/nfc-tap/releases)
 
 ## License
 

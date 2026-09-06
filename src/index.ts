@@ -1,5 +1,5 @@
 /**
- * web-nfc — a friendly wrapper around the browser's Web NFC API (`NDEFReader`).
+ * nfc-tap — a friendly wrapper around the browser's Web NFC API (`NDEFReader`).
  *
  * The raw API hands you `DataView`s, an event lifecycle with no natural "stop",
  * and error names that tell you nothing. This module turns a tap into a plain
@@ -1033,7 +1033,7 @@ export async function makeReadOnly(options: MakeReadOnlyOptions = {}): Promise<v
 /* Default export                                                             */
 /* -------------------------------------------------------------------------- */
 
-/** Every named export, gathered so `WebNfc.scan(...)` reads naturally from the CDN build. */
+/** Every named export, gathered so `NfcTap.scan(...)` reads naturally from the CDN build. */
 const Nfc = {
   isSupported,
   scan,

@@ -13,7 +13,7 @@ export default defineConfig([
   {
     entry: { index: 'src/index.ts' },
     format: ['iife'],
-    globalName: 'WebNfc',
+    globalName: 'NfcTap',
     outExtension: () => ({ js: '.global.js' }),
     minify: true,
     target: 'es2020',

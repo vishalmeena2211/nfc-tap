@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>web-nfc demo</title>
+    <title>nfc-tap demo</title>
     <style>
       :root {
         color-scheme: light dark;
@@ -109,7 +109,7 @@
   </head>
   <body>
     <main>
-      <h1>web-nfc</h1>
+      <h1>nfc-tap</h1>
       <p class="lede">Tap an NFC tag against the back of the phone, or write one.</p>
 
       <div id="banner" role="alert"></div>
@@ -126,7 +126,7 @@
       <section>
         <h2>Write</h2>
         <div class="row">
-          <input id="text" type="text" placeholder="Text to write" value="hello from web-nfc" />
+          <input id="text" type="text" placeholder="Text to write" value="hello from nfc-tap" />
           <button id="write-text">Write text</button>
         </div>
         <div class="row">
@@ -211,7 +211,7 @@
 
       async function startScan() {
         try {
-          handle = await WebNfc.scan({
+          handle = await NfcTap.scan({
             onTag: (tag) => line(describe(tag), 'ok'),
             onError: (err) => line('scan error [' + err.code + '] ' + escapeHtml(err.message), 'err'),
           });
@@ -245,7 +245,7 @@
       async function doWrite(message, label, options) {
         line('hold a tag against the phone to write ' + label + '…');
         try {
-          await WebNfc.write(message, options);
+          await NfcTap.write(message, options);
           line('wrote ' + label, 'ok');
         } catch (err) {
           line('write failed [' + err.code + '] ' + escapeHtml(err.message), 'err');
@@ -262,7 +262,7 @@
         doWrite({ url }, 'URL ' + url);
       });
 
-      if (!WebNfc.isSupported()) showUnsupportedBanner();
+      if (!NfcTap.isSupported()) showUnsupportedBanner();
       else line('Web NFC is available. Press "Start scanning".');
     </script>
   </body>
