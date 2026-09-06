@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>web-nfc demo</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #fbfbfd;
+        --fg: #16161a;
+        --muted: #6b7280;
+        --line: #e3e3e8;
+        --card: #ffffff;
+        --accent: #2563eb;
+        --warn-bg: #fff7ed;
+        --warn-line: #fdba74;
+        --warn-fg: #7c2d12;
+        --ok: #15803d;
+        --err: #b91c1c;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d0d10;
+          --fg: #ededf0;
+          --muted: #9ca3af;
+          --line: #26262c;
+          --card: #151519;
+          --accent: #60a5fa;
+          --warn-bg: #2a1a0c;
+          --warn-line: #92400e;
+          --warn-fg: #fed7aa;
+          --ok: #4ade80;
+          --err: #f87171;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 24px 16px 64px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      main { max-width: 640px; margin: 0 auto; }
+      h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -0.01em; }
+      p.lede { margin: 0 0 20px; color: var(--muted); }
+      section {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin: 0 0 12px; }
+      button {
+        font: inherit;
+        font-weight: 600;
+        padding: 10px 16px;
+        border-radius: 9px;
+        border: 1px solid transparent;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+      }
+      button.secondary { background: transparent; color: var(--fg); border-color: var(--line); }
+      button:disabled { opacity: 0.45; cursor: not-allowed; }
+      input {
+        font: inherit;
+        padding: 10px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        color: var(--fg);
+        width: 100%;
+      }
+      .row { display: flex; gap: 8px; align-items: center; }
+      .row input { flex: 1 1 auto; }
+      .row + .row { margin-top: 10px; }
+      #banner {
+        display: none;
+        background: var(--warn-bg);
+        border: 1px solid var(--warn-line);
+        color: var(--warn-fg);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+      }
+      #banner strong { display: block; margin-bottom: 4px; }
+      #banner ul { margin: 8px 0 0; padding-left: 20px; }
+      #status { font-variant-numeric: tabular-nums; color: var(--muted); margin-left: 10px; }
+      #log {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12.5px;
+        max-height: 340px;
+        overflow-y: auto;
+      }
+      #log li { border-top: 1px dashed var(--line); padding: 9px 0; white-space: pre-wrap; word-break: break-word; }
+      #log li:first-child { border-top: 0; }
+      .t { color: var(--muted); }
+      .ok { color: var(--ok); }
+      .err { color: var(--err); }
+      footer { color: var(--muted); font-size: 13px; text-align: center; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>web-nfc</h1>
+      <p class="lede">Tap an NFC tag against the back of the phone, or write one.</p>
+
+      <div id="banner" role="alert"></div>
+
+      <section>
+        <h2>Scan</h2>
+        <div class="row">
+          <button id="scan">Start scanning</button>
+          <button id="clear" class="secondary">Clear log</button>
+          <span id="status">idle</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Write</h2>
+        <div class="row">
+          <input id="text" type="text" placeholder="Text to write" value="hello from web-nfc" />
+          <button id="write-text">Write text</button>
+        </div>
+        <div class="row">
+          <input id="url" type="url" placeholder="https://example.com" value="https://example.com" />
+          <button id="write-url">Write URL</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Live log</h2>
+        <ul id="log">
+          <li class="t">Waiting for activity…</li>
+        </ul>
+      </section>
+
+      <footer>Hold the tag still until the write finishes — moving it away gives <code>tag-moved</code>.</footer>
+    </main>
+
+    <script src="../dist/index.global.js"></script>
+    <script>
+      const log = document.getElementById('log');
+      const status = document.getElementById('status');
+      const scanBtn = document.getElementById('scan');
+      const banner = document.getElementById('banner');
+      let placeholder = true;
+      let handle = null;
+
+      function line(html, cls) {
+        if (placeholder) {
+          log.innerHTML = '';
+          placeholder = false;
+        }
+        const li = document.createElement('li');
+        if (cls) li.className = cls;
+        const time = new Date().toLocaleTimeString();
+        li.innerHTML = '<span class="t">' + time + '</span>  ' + html;
+        log.prepend(li);
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (c) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+        })[c]);
+      }
+
+      function describe(tag) {
+        const lines = ['serial: ' + (tag.serialNumber || '(none reported)')];
+        if (tag.records.length === 0) lines.push('(no records — blank tag)');
+        tag.records.forEach((record, i) => {
+          let value;
+          if (record.text !== undefined) value = JSON.stringify(record.text);
+          else if (record.url !== undefined) value = record.url;
+          else if (record.json !== undefined) value = JSON.stringify(record.json);
+          else if (record.bytes) value = record.bytes.length + ' bytes';
+          else value = '(empty)';
+          const meta = [record.recordType, record.mediaType, record.lang]
+            .filter(Boolean)
+            .join(' · ');
+          lines.push('  #' + i + '  ' + meta + '  ' + value);
+        });
+        return escapeHtml(lines.join('\n'));
+      }
+
+      function showUnsupportedBanner() {
+        const reasons = [];
+        if (typeof window.NDEFReader !== 'function') {
+          reasons.push('This browser has no <code>NDEFReader</code>. Web NFC ships only in Chrome for Android 89+ — desktop Chrome, Safari and Firefox do not have it.');
+        }
+        if (!window.isSecureContext) {
+          reasons.push('This page is not a secure context. Serve it over HTTPS (or <code>localhost</code>).');
+        }
+        banner.innerHTML =
+          '<strong>NFC is not available here.</strong>The demo controls are disabled.<ul><li>' +
+          reasons.join('</li><li>') +
+          '</li></ul>';
+        banner.style.display = 'block';
+        document.querySelectorAll('button').forEach((b) => {
+          if (b.id !== 'clear') b.disabled = true;
+        });
+        status.textContent = 'unsupported';
+      }
+
+      async function startScan() {
+        try {
+          handle = await WebNfc.scan({
+            onTag: (tag) => line(describe(tag), 'ok'),
+            onError: (err) => line('scan error [' + err.code + '] ' + escapeHtml(err.message), 'err'),
+          });
+          scanBtn.textContent = 'Stop scanning';
+          status.textContent = 'scanning — tap a tag';
+          line('scan started (auto-resumes when the page comes back to the foreground)');
+        } catch (err) {
+          line('could not start [' + err.code + '] ' + escapeHtml(err.message), 'err');
+          status.textContent = 'error';
+        }
+      }
+
+      function stopScan() {
+        handle?.stop();
+        handle = null;
+        scanBtn.textContent = 'Start scanning';
+        status.textContent = 'idle';
+        line('scan stopped');
+      }
+
+      scanBtn.addEventListener('click', () => {
+        if (handle && handle.active) stopScan();
+        else startScan();
+      });
+
+      document.getElementById('clear').addEventListener('click', () => {
+        log.innerHTML = '<li class="t">Waiting for activity…</li>';
+        placeholder = true;
+      });
+
+      async function doWrite(message, label, options) {
+        line('hold a tag against the phone to write ' + label + '…');
+        try {
+          await WebNfc.write(message, options);
+          line('wrote ' + label, 'ok');
+        } catch (err) {
+          line('write failed [' + err.code + '] ' + escapeHtml(err.message), 'err');
+        }
+      }
+
+      document.getElementById('write-text').addEventListener('click', () => {
+        const text = document.getElementById('text').value;
+        doWrite({ text, lang: 'en' }, 'text ' + JSON.stringify(text));
+      });
+
+      document.getElementById('write-url').addEventListener('click', () => {
+        const url = document.getElementById('url').value;
+        doWrite({ url }, 'URL ' + url);
+      });
+
+      if (!WebNfc.isSupported()) showUnsupportedBanner();
+      else line('Web NFC is available. Press "Start scanning".');
+    </script>
+  </body>
+</html>
