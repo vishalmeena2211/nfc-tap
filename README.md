@@ -4,8 +4,9 @@ _A friendly wrapper around the browser's Web NFC API. One plain object per tap, 
 
 [![npm version](https://img.shields.io/npm/v/web-nfc.svg)](https://www.npmjs.com/package/web-nfc)
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/web-nfc)](https://bundlephobia.com/package/web-nfc)
-[![license MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![license MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/vishalmeena2211/web-nfc/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](https://www.typescriptlang.org/)
+[![GitHub](https://img.shields.io/badge/GitHub-vishalmeena2211%2Fweb--nfc-181717?logo=github)](https://github.com/vishalmeena2211/web-nfc)
 
 **Chrome for Android only.** Web NFC ships in Chrome/Edge on Android 89+, over HTTPS, and nowhere else — not desktop Chrome, not Safari, not Firefox, and not iOS. This package tells you that honestly through `isSupported()` instead of failing at the first tap. See [Browser support](#browser-support).
 
@@ -367,6 +368,13 @@ npm test
 ```
 
 The demo in `demo/index.html` loads `../dist/index.global.js`, so run `npm run build` and serve the folder over a local server — over HTTPS, from an Android phone, if you want the NFC parts to do anything.
+
+## Links
+
+- **Repository** — [github.com/vishalmeena2211/web-nfc](https://github.com/vishalmeena2211/web-nfc)
+- **npm** — [npmjs.com/package/web-nfc](https://www.npmjs.com/package/web-nfc)
+- **Issues & feature requests** — [Report an issue](https://github.com/vishalmeena2211/web-nfc/issues)
+- **Changelog** — [releases](https://github.com/vishalmeena2211/web-nfc/releases)
 
 ## License
 
